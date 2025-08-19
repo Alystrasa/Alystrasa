@@ -2,8 +2,8 @@
 
 from odoo import api, fields, models
 
-from models.onshape_client import OnshapeClient
-from models.onshape_document import OnshapeDocument as DocumentData
+from .onshape_client import OnshapeClient
+from .onshape_document_data import OnshapeDocumentData
 
 
 class OnshapeDocument(models.Model):
@@ -20,7 +20,7 @@ class OnshapeDocument(models.Model):
         """Synchronize this document with Onshape."""
         client = OnshapeClient()
         for record in self:
-            data = DocumentData.fetch(client, record.onshape_id)
+            data = OnshapeDocumentData.fetch(client, record.onshape_id)
             record.write(
                 {
                     "name": data.name,
