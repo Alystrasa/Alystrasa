@@ -4,7 +4,6 @@ import hashlib
 import hmac
 import logging
 import time
-
 import requests
 from odoo import api, fields, models
 
@@ -43,6 +42,7 @@ class OnshapeDocument(models.Model):
         signature = base64.b64encode(digest).decode()
         headers = {"Date": date, "Authorization": f"On {api_key}:{signature}"}
 
+
         try:
             response = requests.get(base_url + endpoint, headers=headers, timeout=10)
             response.raise_for_status()
@@ -58,3 +58,9 @@ class OnshapeDocument(models.Model):
             else:
                 self.create(vals)
         return True
+
+        response = requests.get(base_url + endpoint, headers=headers, timeout=10)
+        response.raise_for_status()
+        for doc in response.json().get("items", []):
+            self.create({"name": doc["name"], "document_id": doc["id"]})
+
