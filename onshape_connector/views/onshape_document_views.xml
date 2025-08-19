@@ -1,0 +1,23 @@
+<odoo>
+  <record id="view_onshape_document_list" model="ir.ui.view">
+    <field name="name">onshape.document.list</field>
+    <field name="model">onshape.document</field>
+    <field name="arch" type="xml">
+      <list>
+        <field name="name"/>
+        <field name="document_id"/>
+      </list>
+    </field>
+  </record>
+
+  <record id="action_onshape_documents" model="ir.actions.act_window">
+    <field name="name">Onshape Dokumente</field>
+    <field name="res_model">onshape.document</field>
+    <field name="view_mode">list</field>
+  </record>
+
+  <menuitem id="menu_onshape_root" name="Onshape"/>
+  <menuitem id="menu_onshape_docs" name="Dokumente"
+            parent="menu_onshape_root"
+            action="action_onshape_documents"/>
+</odoo>
