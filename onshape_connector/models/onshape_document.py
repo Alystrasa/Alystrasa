@@ -2,11 +2,13 @@
 import base64
 import hashlib
 import hmac
+import logging
 import time
-
 import requests
 from odoo import api, fields, models
 
+
+_logger = logging.getLogger(__name__)
 
 class OnshapeDocument(models.Model):
     """Speichert Dokument-Infos aus Onshape."""
@@ -39,7 +41,26 @@ class OnshapeDocument(models.Model):
         digest = hmac.new(api_secret.encode(), signature_string, hashlib.sha256).digest()
         signature = base64.b64encode(digest).decode()
         headers = {"Date": date, "Authorization": f"On {api_key}:{signature}"}
+
+
+        try:
+            response = requests.get(base_url + endpoint, headers=headers, timeout=10)
+            response.raise_for_status()
+        except requests.RequestException:
+            _logger.exception("Fehler beim Abrufen der Onshape-Dokumente")
+            return False
+
+        for doc in response.json().get("items", []):
+            vals = {"name": doc["name"], "document_id": doc["id"]}
+            existing = self.search([("document_id", "=", doc["id"])], limit=1)
+            if existing:
+                existing.write(vals)
+            else:
+                self.create(vals)
+        return True
+
         response = requests.get(base_url + endpoint, headers=headers, timeout=10)
         response.raise_for_status()
         for doc in response.json().get("items", []):
             self.create({"name": doc["name"], "document_id": doc["id"]})
+
