@@ -1,6 +1,6 @@
 - 👋 Hi, I’m @Alystrasa
 - 👀 I’m interested in Python, Maschnine Learning
-- 🌱 I’m currently learning Python
+- 🌱 I’m currently learning Python, n8n, ERP Odoo 18/19
 
 
 <!---
